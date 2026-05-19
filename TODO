@@ -1,0 +1,36 @@
+/* 
+ * highlightbuffer - loop through current buffer's lines and highlight
+ * them using highlight_line, provided by kat
+ */
+int
+hlbuffer()
+{
+	struct buffer *bp = curbp;
+	struct line *lp;
+	int s, llen, lnum = 0;
+	
+	for (lp = bfirstlp(bp); lp != bp->b_headp; lp = lforw(lp)) {
+		lnum++;
+		llen = llength(lp);
+		if (llen >= BUFSIZE)
+			return (FALSE);
+		
+		highlight-line(lp->l_text, *bp, llen);
+	}
+	cleanup();
+	return (TRUE);
+}
+
+struct line {
+	[...]
+	char    *l_text; # char array!!!!
+};
+
+so now I need to figure out:
+- where to run hlbuffer()
+- I wonder if I could initialise the highlight engine really early
+- make sure to set a theme_file and pass it to the library somehow
+- do I just add #include highlight.c
+- and add highlight.c to the makefile?
+- is that it? (test to find out!)
+- need to make sure to redo highlight on lchange()
